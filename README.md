@@ -2,6 +2,8 @@ ioeX Node Program
 
 tar zxvf MainChain-0.2.1.tar.gz
 
+cd MainChain
+
 start
 - run `./ioex.sh start` to run the node program.
 

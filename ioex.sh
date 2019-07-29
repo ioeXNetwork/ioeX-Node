@@ -1,7 +1,6 @@
 #!/bin/bash
 
-ioex_start ()
-{
+ioex_start(){
     if [ -e ioex.pid ]; then
         pid=`cat ioex.pid`
         if [ -e /proc/$pid -a /proc/$pid/exe ]; then
@@ -19,16 +18,19 @@ ioex_start ()
 
     pid=`cat ioex.pid`
 
+    sleep 1
+
     if [ -e /proc/$pid -a /proc/$pid/exe ]; then
         echo "Start ioeX Node Success!"
         return 0
+    else
+        echo "Start ioeX Node Fail!"
     fi
 
     return 1
 }
 
-ioex_stop ()
-{
+ioex_stop(){
     if [ -e ioex.pid ]; then
         pid=`cat ioex.pid`
         if [ -e /proc/$pid -a /proc/$pid/exe ]; then
@@ -41,12 +43,14 @@ ioex_stop ()
     return 1
 }
 
-ioex_restart ()
-{
-    pid=`cat ioex.pid`
-
-    echo "Stop ioeX Node..."
-    kill $pid
+ioex_restart(){
+    if [ -e ioex.pid ]; then
+        pid=`cat ioex.pid`
+        if [ -e /proc/$pid -a /proc/$pid/exe ]; then
+            echo "Stop ioeX Node"
+            kill $pid
+        fi   
+    fi
 
     if [ ! -f config.json ]; then
         config
@@ -58,7 +62,7 @@ ioex_restart ()
     pid=`cat ioex.pid`
 
     if [ -e /proc/$pid -a /proc/$pid/exe ]; then
-        echo "Restart ioeX Node Success!"
+        echo "Restart ioeX Node Successed!"
         return 0
     fi
 
@@ -68,8 +72,7 @@ ioex_restart ()
 regx_singleSignAddress='^[E]{1}[a-km-zA-HJ-NP-Z0-9]{33}'
 regx_multiSignAddress='^[8]{1}[a-km-zA-HJ-NP-Z0-9]{33}'
 
-invalid_address ()
-{
+invalid_address(){
     if [[ "$1" =~ $regx_singleSignAddress ]]; then
         return 0
     elif [[ "$1" =~ $regx_multiSignAddress ]]; then
@@ -79,8 +82,7 @@ invalid_address ()
     fi
 }
 
-config ()
-{
+config(){
     if [ -f config.json ]; then
         cp -df config.json config.json.bak
         config_file="config.json.bak"
@@ -105,8 +107,11 @@ config ()
     return 0
 }
 
-help ()
-{
+help(){
+    echo "start:    start ioeX Node."
+    echo "stop:     stop ioeX Node."
+    echo "restart:  stop and start ioeX Node."
+    echo "config:   config ioeX Node parameter."
     return 0
 }
 
@@ -124,7 +129,7 @@ case "$1" in
         config
         ;;
     *)
-        echo "help"
+        help
         ;;
 esac
 exit 0
